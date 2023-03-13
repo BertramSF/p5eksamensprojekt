@@ -106,3 +106,5 @@ function dist2p (x1, y1, x2, y2) {
   const d = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
   return d
 }
+
+//Din mor
