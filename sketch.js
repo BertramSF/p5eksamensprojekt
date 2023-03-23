@@ -5,6 +5,11 @@ const Height = 750
 // Varibler for pointsystem
 let point = 0
 
+//Genstartknap
+let Button
+let ButtonWidth = 230
+let ButtonHeight = 60
+
 // Variabler for Player
 const d = 72
 let x = 800 / 2
@@ -13,7 +18,7 @@ const fart = 10
 const r = d / 2
 
 // Variabler for Enemies
-const enemies = []
+let enemies = []
 const numberOfEnemies = 10
 let Ehastighed = 5
 
@@ -29,10 +34,22 @@ function generateEnemies(hastighed) {
 
 // Setup af Spillet
 function setup() {
+
+
   let cnv = createCanvas(Width, Height)
-  var x = (windowWidth - width) / 2;
-  var y = (windowHeight - height) / 2;
+  let x = (windowWidth - width) / 2;
+  let y = (windowHeight - height) / 2;
   cnv.position(x, y);
+
+  // Genstartknap
+  Button = createButton("Genstart")
+  Button.position((windowWidth / 2 - ButtonWidth / 2), (windowHeight / 2 - ButtonHeight / 2))
+  Button.size(ButtonWidth, ButtonHeight)
+  Button.style("font-family", "Helvetica");
+  Button.style("font-size", "48px")
+  Button.style("background-color", "#E13112")
+  Button.mousePressed(reset)
+  Button.hide()
 
   rectMode(CENTER)
   // console.log(dist2p(0, 0, 3, 4))
@@ -40,11 +57,11 @@ function setup() {
   generateEnemies(Ehastighed)
 }
 
-function drawScore(){
+function drawScore() {
   push()
   textSize(40)
   fill("white")
-  text("Score: "+ point, Width-200, 40)
+  text("Score: " + point, Width - 200, 40)
   pop()
 }
 
@@ -70,12 +87,14 @@ function draw() {
     // Hitbox registrering
     if (dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2) {
       console.log("Vi ramte en fjende")
+      // Stop spil
       noLoop()
+      Button.show()
     }
 
     // point-optælling
-    if(enemy.Ey>=744 && enemy.point === false){
-      point+=1
+    if (enemy.Ey >= 744 && enemy.point === false) {
+      point += 1
       enemy.point = true
     }
 
@@ -89,7 +108,7 @@ function draw() {
 
   // Player Movement
   if (keyIsDown(RIGHT_ARROW || 68)) {
-    if (x <= windowWidth - r) {
+    if (x <= Width - r) {
       x = x + fart
     }
   }
@@ -99,7 +118,7 @@ function draw() {
       x = x - fart
     }
   }
-  
+
   drawScore()
 }
 
@@ -125,9 +144,18 @@ class Enemy {
     pop()
   }
 }
+
 //Funktion for Afstands mellem to punkter
 function dist2p(x1, y1, x2, y2) {
   const d = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
   return d
 }
 
+function reset() {
+  Ehastighed = 5
+  enemies = []
+  generateEnemies(Ehastighed)
+  point = 0
+  Button.hide()
+  loop()
+}
