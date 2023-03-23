@@ -11,9 +11,9 @@ let ButtonWidth = 230
 let ButtonHeight = 60
 
 // Variabler for Player
-const d = 72
+let d = 72
 let x = 800 / 2
-const y = 725 - d
+let y = 725 - d
 const fart = 10
 const r = d / 2
 
@@ -156,6 +156,8 @@ function reset() {
   enemies = []
   generateEnemies(Ehastighed)
   point = 0
+  x = 800 / 2
+  y = 725 - d
   Button.hide()
   loop()
 }
