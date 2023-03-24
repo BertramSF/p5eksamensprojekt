@@ -4,7 +4,6 @@ const Height = 750;
 
 // Varibler for pointsystem
 let point = 0;
-let newRound = false;
 
 //Genstartknap
 let Button;
@@ -28,9 +27,10 @@ let isPowerupHit = false;
 
 // Funktion for Enemy Spawning
 function generateEnemies(hastighed) {
-  isPowerupHit = false;
 
-  console.log(isPowerupHit);
+  isPowerupHit = false;
+  enemies = []
+
   let p = floor(random(0, numberOfEnemies));
 
   for (let index = 0; index < numberOfEnemies; index++) {
@@ -87,6 +87,7 @@ function setup() {
   // console.log(dist2p(0, 0, 3, 4))
   // Kald Enemy Spawning funktion
   generateEnemies(Ehastighed);
+  console.log(enemies)
 }
 
 function drawScore() {
@@ -126,12 +127,12 @@ function draw() {
       Button.show();
     } else if (
       dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2 &&
-      enemy.isPowerup === true &&
-      isPowerupHit === false
+      enemy.isPowerup === true && isPowerupHit === false
     ) {
-      console.log("Vi ramte en powerup");
+
       point += 2;
       isPowerupHit = true;
+      console.log("Vi ramte en powerup");
     }
 
     // point-optælling
@@ -142,8 +143,7 @@ function draw() {
   }
 
   // Forøgelse af Enemy Hastighed
-  if (enemies[numberOfEnemies - 1].Ey + 50 >= Height && newRound === false) {
-    newRound = true;
+  if (enemies[numberOfEnemies - 1].Ey + 50 >= Height) {
     Ehastighed += 5;
     generateEnemies(Ehastighed);
   }
