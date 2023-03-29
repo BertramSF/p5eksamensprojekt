@@ -5,6 +5,9 @@ const Height = 750;
 // Varibler for pointsystem
 let point = 0;
 
+// Runde
+let runde = 1
+
 //Genstartknap
 let Button;
 let ButtonWidth = 230;
@@ -31,10 +34,15 @@ function generateEnemies(hastighed) {
   isPowerupHit = false;
   enemies = []
 
-  let p = floor(random(0, numberOfEnemies));
+// Powerup spawning  
+  let p = floor(random(0, numberOfEnemies))
+  let pt = floor(random(0,3))
+ 
+  console.log("Ehastighed", Ehastighed)
 
+// Powerup Score +2
   for (let index = 0; index < numberOfEnemies; index++) {
-    if (index === p) {
+    if (index === p && pt === 1) {
       enemies.push(
         new Enemy(
           random(50, Width - 50),
@@ -45,7 +53,20 @@ function generateEnemies(hastighed) {
           hastighed,
           true
         )
-      );
+      )
+// Powerup Hastighed -5      
+    } else if (index === p && pt === 2 && runde >= 3) {
+      enemies.push(
+        new Enemy(
+          random(50, Width - 50),
+          -50,
+          100,
+          100,
+          "blue",
+          hastighed,
+          true
+        )
+      )  
     } else {
       enemies.push(
         new Enemy(
@@ -57,7 +78,7 @@ function generateEnemies(hastighed) {
           hastighed,
           false
         )
-      );
+      )
     }
   }
   enemies[0].drawEnemy = true;
@@ -70,7 +91,7 @@ function setup() {
   let y = (windowHeight - height) / 2;
   cnv.position(x, y);
 
-  // Genstartknap
+// Genstartknap
   Button = createButton("Genstart");
   Button.position(
     windowWidth / 2 - ButtonWidth / 2,
@@ -84,8 +105,7 @@ function setup() {
   Button.hide();
 
   rectMode(CENTER);
-  // console.log(dist2p(0, 0, 3, 4))
-  // Kald Enemy Spawning funktion
+// Kald Enemy Spawning funktion
   generateEnemies(Ehastighed);
   console.log(enemies)
 }
@@ -99,13 +119,13 @@ function drawScore() {
 }
 
 function draw() {
-  // Player
+// Player
   background(69);
   circle(x, y, d);
   strokeWeight(5);
   fill(162, 120, 9);
 
-  // Nyt Enemy efter forrige Enemy er nået halvejs ned på skærmen
+// Nyt Enemy efter forrige Enemy er nået halvejs ned på skærmen
   for (let index = 0; index < enemies.length; index++) {
     const enemy = enemies[index];
     if (enemy.drawEnemy) {
@@ -116,39 +136,41 @@ function draw() {
       }
     }
 
-    // Hitbox registrering
+// Hitbox registrering
     if (
       dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2 &&
       enemy.isPowerup === false
     ) {
       console.log("Vi ramte en fjende");
-      // Stop spil
+      
+// Stop spil
       noLoop();
       Button.show();
     } else if (
       dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2 &&
-      enemy.isPowerup === true && isPowerupHit === false
-    ) {
-
-      point += 2;
-      isPowerupHit = true;
-      console.log("Vi ramte en powerup");
+      enemy.isPowerup === true && isPowerupHit === false) {
+        point += 2;
+        isPowerupHit = true;
+        console.log("Vi ramte en Powerup");
     }
 
-    // point-optælling
-    if (enemy.Ey >= 744 && enemy.point === false) {
+// Point-optælling
+    if (enemy.Ey >= (Height + enemy.Eh) && enemy.point === false) {
       point += 1;
       enemy.point = true;
     }
   }
 
-  // Forøgelse af Enemy Hastighed
+// Forøgelse af Enemy Hastighed
   if (enemies[numberOfEnemies - 1].Ey + 50 >= Height) {
     Ehastighed += 5;
+    point += 1;
+    runde += 1
+    
     generateEnemies(Ehastighed);
   }
 
-  // Player Movement
+// Player Movement
   if (keyIsDown(RIGHT_ARROW || 68)) {
     if (x <= Width - r) {
       x = x + fart;
@@ -178,7 +200,7 @@ class Enemy {
     this.isPowerup = isPowerup;
   }
 
-  // Draw Enemy
+// Draw Enemy
   draw() {
     push();
     fill(this.farve);
@@ -188,15 +210,16 @@ class Enemy {
   }
 }
 
-//Funktion for Afstands mellem to punkter
+// Funktion for Afstand mellem to punkter
 function dist2p(x1, y1, x2, y2) {
-  const d = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
-  return d;
+  const dist = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+  return dist;
 }
 
 function reset() {
   Ehastighed = 5;
   enemies = [];
+  //runde = 1
   generateEnemies(Ehastighed);
   point = 0;
   x = 800 / 2;
