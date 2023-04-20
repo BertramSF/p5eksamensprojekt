@@ -8,6 +8,18 @@ let point = 0;
 // Runde
 let runde = 1;
 
+// PowerUp
+let PowerupPlads
+let PowerupType
+
+// Lyde
+let DeathSound;
+let BaggrundsLyd;
+let PowerUpSound;
+
+// Baggrund
+let Baggrund
+
 //Genstartknap
 let Button;
 let ButtonWidth = 230;
@@ -33,17 +45,17 @@ function generateEnemies(hastighed) {
   isPowerupHit = false;
   enemies = [];
 
-  // Powerup spawning
-  let p = floor(random(0, numberOfEnemies));
-  let pt = floor(random(0, 3));
+// Powerup spawning
+PowerupPlads = floor(random(0, numberOfEnemies));
+PowerupType = floor(random(0, 3));
 
   console.log("Ehastighed", Ehastighed);
-  console.log("pt", pt);
-  console.log("p", p);
+  console.log("PowerupType", PowerupType);
+  console.log("PowerupPlads", PowerupPlads);
 
   // Powerup Score +2
   for (let index = 0; index < numberOfEnemies; index++) {
-    if (index === p && pt === 1) {
+    if (index === PowerupPlads && PowerupType === 1) {
       enemies.push(
         new Enemy(
           random(50, Width - 50),
@@ -55,15 +67,15 @@ function generateEnemies(hastighed) {
           true
         )
       );
-      // Powerup Hastighed -5
-    } else if (index === p && pt === 2 && runde >= 3) {
+    // Powerup Hastighed -5
+    } else if (index === PowerupPlads && PowerupType === 2 && runde >= 3) {
       enemies.push(
         new Enemy(
           random(50, Width - 50),
           -50,
           100,
           100,
-          "blue",
+          "Purple",
           hastighed,
           true
         )
@@ -85,12 +97,29 @@ function generateEnemies(hastighed) {
   enemies[0].drawEnemy = true;
 }
 
+// Preload
+function preload() {
+  DeathSound = loadSound('YodaDeathSound.mp3');
+  BaggrundsLyd = loadSound('Jumper.mp3');
+  PowerUpSound = loadSound('PowerUpSound.mp3');
+  Baggrund = loadImage('Nattehimmel.jpeg')
+}
+
+// Baggrundslyd Loop
+function PlaySound() {
+  BaggrundsLyd.loop();
+}
+
 // Setup af Spillet
 function setup() {
+  BaggrundsLyd.setVolume(0.3)
+  PlaySound()
   let cnv = createCanvas(Width, Height);
   let x = (windowWidth - width) / 2;
   let y = (windowHeight - height) / 2;
   cnv.position(x, y);
+
+  
 
   // Genstartknap
   Button = createButton("Genstart");
@@ -106,11 +135,13 @@ function setup() {
   Button.hide();
 
   rectMode(CENTER);
+
   // Kald Enemy Spawning funktion
   generateEnemies(Ehastighed);
   console.log(enemies);
 }
 
+// Score funktion
 function drawScore() {
   push();
   textSize(40);
@@ -119,12 +150,22 @@ function drawScore() {
   pop();
 }
 
+// Runde funktion
+function drawRunde() {
+  push();
+  textSize(40);
+  fill("white");
+  text("Runde: " + runde, 20, 40);
+  pop();
+}
+
 function draw() {
   // Player
-  background(69);
+  background(Baggrund);
   circle(x, y, d);
   strokeWeight(5);
-  fill(162, 120, 9);
+  fill(0, 255, 183);
+ 
 
   // Nyt Enemy efter forrige Enemy er nået halvejs ned på skærmen
   for (let index = 0; index < enemies.length; index++) {
@@ -143,20 +184,31 @@ function draw() {
       enemy.isPowerup === false
     ) {
       console.log("Vi ramte en fjende");
-
+      DeathSound.play()
       // Stop spil
       noLoop();
       Button.show();
     } else if (
       dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2 &&
       enemy.isPowerup === true &&
-      isPowerupHit === false
+      isPowerupHit === false &&
+      PowerupType === 1 
     ) {
       point += 2;
       isPowerupHit = true;
-      console.log("Vi ramte en Powerup");
+      console.log("Vi ramte en ScorePowerup");
+      PowerUpSound.play()
+    } else if (
+      dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2 &&
+      enemy.isPowerup === true &&
+      isPowerupHit === false &&
+      PowerupType === 2 
+    ) {
+      Ehastighed -= 5;
+      isPowerupHit = true;
+      console.log("Vi ramte en HastighedPowerup");
+      PowerUpSound.play()
     }
-
     // Point-optælling
     if (enemy.Ey >= Height + enemy.Eh && enemy.point === false) {
       point += 1;
@@ -187,6 +239,7 @@ function draw() {
   }
 
   drawScore();
+  drawRunde();
 }
 
 // Klasse for Enemy
@@ -219,6 +272,7 @@ function dist2p(x1, y1, x2, y2) {
   return dist;
 }
 
+// Restart funktion
 function reset() {
   Ehastighed = 5;
   enemies = [];
