@@ -4,6 +4,7 @@ const Height = 750;
 
 // Varibler for pointsystem
 let point = 0;
+let HighScore = 0;
 
 // Runde
 let runde = 1;
@@ -16,6 +17,7 @@ let PowerupType
 let DeathSound;
 let BaggrundsLyd;
 let PowerUpSound;
+let songPlaying = false;
 
 // Baggrund
 let Baggrund
@@ -159,6 +161,15 @@ function drawRunde() {
   pop();
 }
 
+// HighScore funktion
+function drawHighScore() {
+  push();
+  textSize(40);
+  fill("white");
+  text("Highscore: " + HighScore, 250, 40);
+  pop();
+}
+
 function draw() {
   // Player
   background(Baggrund);
@@ -230,16 +241,25 @@ function draw() {
     if (x <= Width - r) {
       x = x + fart;
     }
+    if (songPlaying === false){
+      PlaySound();
+      songPlaying = true;
+    }
   }
 
   if (keyIsDown(LEFT_ARROW)) {
     if (x >= 0 + r) {
       x = x - fart;
     }
+    if (songPlaying === false){
+      PlaySound();
+      songPlaying = true;
+    }
   }
 
   drawScore();
   drawRunde();
+  drawHighScore();
 }
 
 // Klasse for Enemy
@@ -278,6 +298,9 @@ function reset() {
   enemies = [];
   runde = 1;
   generateEnemies(Ehastighed);
+  if(point > HighScore) {
+    HighScore = point
+  }
   point = 0;
   x = 800 / 2;
   y = 725 - d;
