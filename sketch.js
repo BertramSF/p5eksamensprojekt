@@ -10,8 +10,8 @@ let HighScore = 0;
 let runde = 1;
 
 // PowerUp
-let PowerupPlads
-let PowerupType
+let PowerupPlads;
+let PowerupType;
 
 // Lyde
 let DeathSound;
@@ -20,7 +20,7 @@ let PowerUpSound;
 let songPlaying = false;
 
 // Baggrund
-let Baggrund
+let Baggrund;
 
 //Genstartknap
 let Button;
@@ -47,9 +47,9 @@ function generateEnemies(hastighed) {
   isPowerupHit = false;
   enemies = [];
 
-// Powerup spawning
-PowerupPlads = floor(random(0, numberOfEnemies));
-PowerupType = floor(random(0, 3));
+  // Powerup spawning
+  PowerupPlads = floor(random(0, numberOfEnemies));
+  PowerupType = floor(random(0, 3));
 
   console.log("Ehastighed", Ehastighed);
   console.log("PowerupType", PowerupType);
@@ -69,7 +69,7 @@ PowerupType = floor(random(0, 3));
           true
         )
       );
-    // Powerup Hastighed -5
+      // Powerup Hastighed -5
     } else if (index === PowerupPlads && PowerupType === 2 && runde >= 3) {
       enemies.push(
         new Enemy(
@@ -101,10 +101,10 @@ PowerupType = floor(random(0, 3));
 
 // Preload
 function preload() {
-  DeathSound = loadSound('YodaDeathSound.mp3');
-  BaggrundsLyd = loadSound('Jumper.mp3');
-  PowerUpSound = loadSound('PowerUpSound.mp3');
-  Baggrund = loadImage('Nattehimmel.jpeg')
+  DeathSound = loadSound("YodaDeathSound.mp3");
+  BaggrundsLyd = loadSound("Jumper.mp3");
+  PowerUpSound = loadSound("PowerUpSound.mp3");
+  Baggrund = loadImage("Nattehimmel.jpeg");
 }
 
 // Baggrundslyd Loop
@@ -114,14 +114,12 @@ function PlaySound() {
 
 // Setup af Spillet
 function setup() {
-  BaggrundsLyd.setVolume(0.3)
-  PlaySound()
+  BaggrundsLyd.setVolume(0.3);
+
   let cnv = createCanvas(Width, Height);
   let x = (windowWidth - width) / 2;
   let y = (windowHeight - height) / 2;
   cnv.position(x, y);
-
-  
 
   // Genstartknap
   Button = createButton("Genstart");
@@ -176,7 +174,6 @@ function draw() {
   circle(x, y, d);
   strokeWeight(5);
   fill(0, 255, 183);
- 
 
   // Nyt Enemy efter forrige Enemy er nået halvejs ned på skærmen
   for (let index = 0; index < enemies.length; index++) {
@@ -195,7 +192,7 @@ function draw() {
       enemy.isPowerup === false
     ) {
       console.log("Vi ramte en fjende");
-      DeathSound.play()
+      DeathSound.play();
       // Stop spil
       noLoop();
       Button.show();
@@ -203,22 +200,22 @@ function draw() {
       dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2 &&
       enemy.isPowerup === true &&
       isPowerupHit === false &&
-      PowerupType === 1 
+      PowerupType === 1
     ) {
       point += 2;
       isPowerupHit = true;
       console.log("Vi ramte en ScorePowerup");
-      PowerUpSound.play()
+      PowerUpSound.play();
     } else if (
       dist2p(enemy.Ex, enemy.Ey, x, y) < d / 2 + enemy.Ew / 2 &&
       enemy.isPowerup === true &&
       isPowerupHit === false &&
-      PowerupType === 2 
+      PowerupType === 2
     ) {
       Ehastighed -= 5;
       isPowerupHit = true;
       console.log("Vi ramte en HastighedPowerup");
-      PowerUpSound.play()
+      PowerUpSound.play();
     }
     // Point-optælling
     if (enemy.Ey >= Height + enemy.Eh && enemy.point === false) {
@@ -241,7 +238,7 @@ function draw() {
     if (x <= Width - r) {
       x = x + fart;
     }
-    if (songPlaying === false){
+    if (songPlaying === false) {
       PlaySound();
       songPlaying = true;
     }
@@ -251,7 +248,7 @@ function draw() {
     if (x >= 0 + r) {
       x = x - fart;
     }
-    if (songPlaying === false){
+    if (songPlaying === false) {
       PlaySound();
       songPlaying = true;
     }
@@ -298,8 +295,8 @@ function reset() {
   enemies = [];
   runde = 1;
   generateEnemies(Ehastighed);
-  if(point > HighScore) {
-    HighScore = point
+  if (point > HighScore) {
+    HighScore = point;
   }
   point = 0;
   x = 800 / 2;
